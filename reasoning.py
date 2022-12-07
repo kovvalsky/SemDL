@@ -31,7 +31,7 @@ def gen_syllogism(M, S, P, neg="not", types="aeio", figures="1234", annotated=Fa
     entailment = set('f1-aaa f1-aii f1-eae f1-eio f2-aee f2-aoo f2-eae f2-eio f3-aii f3-eio f3-iai f3-oao f4-aee f4-eio f4-iai'.split())
     # contradictions can be deduced based on the negation of the conclusions
     neg_map = str.maketrans("aeio", "oiea")
-    contradiction = set([ f"{e[:-1]}{e[-1].translate(neg_map)}" for e in entailmen ])
+    contradiction = set([ f"{e[:-1]}{e[-1].translate(neg_map)}" for e in entailment ])
     
     # Get label based on the name of a syllogism
     def get_label(name):
