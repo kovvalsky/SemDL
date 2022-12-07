@@ -7,9 +7,13 @@ Utility functions for reasoning demos
 
 from typing import List, Tuple, Dict
 import re
+import numpy as np
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
+import torch
 
 
 #########################################################
+# Generate syllogisms
 # follows terminology at https://en.wikipedia.org/wiki/Syllogism
 def gen_syllogism(M, S, P, neg="not", types="aeio", figures="1234", annotated=False):
     """
@@ -56,3 +60,32 @@ def gen_syllogism(M, S, P, neg="not", types="aeio", figures="1234", annotated=Fa
                     name = f"f{f}-{t1}{t2}{t}"
                     label = f"-{get_label(name)}" if annotated else "" 
                     yield f"{name}{label}", (prem1.format(**d), prem2.format(**d), con.format(**d))
+                    
+                    
+#########################################################
+# Classify NLI problems
+
+def load_tok_model(hub_name):
+    tokenizer = AutoTokenizer.from_pretrained(hub_name, use_fast=True)
+    model = AutoModelForSequenceClassification.from_pretrained(hub_name)
+    return tokenizer, model
+
+def probs2prediction(probs, id2label):
+    """ 
+    Gets prob distribution and selects the max with its corresponding label.
+    Returns dict of prediction details
+    """
+    lab_index = np.argmax(probs)
+    return {"label_index": lab_index, "label": id2label[lab_index],
+            "prob": probs[lab_index],
+            "probs": {l:probs[i] for i, l in id2label.items()}}
+
+def predict_nli(tokenizer, model, nli_prob, device=None):
+    """ 
+    nli_prob - list with two elements
+    """
+    encoded_prob = tokenizer(*nli_prob, truncation=True, padding=True, return_tensors="pt")
+    encoded_prob = encoded_prob.to(device) if device else encoded_prob.to(model.device)
+    output = model(**encoded_prob) #transformers.modeling_outputs.SequenceClassifierOutput
+    probs = torch.softmax(output.logits, dim=1).tolist()[0]
+    return probs2prediction(probs, model.config.id2label)
