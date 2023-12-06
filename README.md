@@ -4,3 +4,4 @@ A repository for the utility scripts used by the demos in **Semantics and Deep L
 * Compositionality
 * Language and Vision
   
+https://colab.research.google.com/github/kovvalsky/SemDL/blob/master/notebooks/textual_inference.ipynb
