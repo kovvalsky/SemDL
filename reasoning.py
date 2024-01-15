@@ -15,11 +15,12 @@ import torch
 #########################################################
 # Generate syllogisms
 # follows terminology at https://en.wikipedia.org/wiki/Syllogism
-def gen_syllogism(M, S, P, neg="not", types="aeio", figures="1234", annotated=False):
+def gen_syllogism(M, S, P, neg="not", types="aeio", figures="1234", existential_import=True):
     """
     Returns a generator that produces syllogisms. Each syllogism is a pair of
     its id (consisting of the figure and sentence types) and a tuple of three
     sentences (2 premises and a conclusion).
+    Each syllogism also comes with an inference label that depends on the existential import flag
     """
     all_figures = {'1':('MP','SM'), '2':('PM','SM'), '3':('MP','MS'), '4':('PM','MS')}
     all_types = {'a': "All {} are {}",
@@ -32,7 +33,10 @@ def gen_syllogism(M, S, P, neg="not", types="aeio", figures="1234", annotated=Fa
     sel_types = tuple( (t, v) for (t, v) in sorted(all_types.items()) if t in types ) 
 
     # labeling the syllogisms
-    entailment = set('f1-aaa f1-aii f1-eae f1-eio f2-aee f2-aoo f2-eae f2-eio f3-aii f3-eio f3-iai f3-oao f4-aee f4-eio f4-iai'.split())
+    if existential_import:
+        entailment = set('f1-aaa f1-eae f1-aai f1-aii f1-eao f1-eio f2-aee f2-eae f2-aeo f2-aoo f2-eao f2-eio f3-aai f3-aii f3-iai f3-eao f3-eio f3-oao f4-aee f4-aai f4-iai f4-aeo f4-eao f4-eio']'.split())
+    else:
+        entailment = set('f1-aaa f1-aii f1-eae f1-eio f2-aee f2-aoo f2-eae f2-eio f3-aii f3-eio f3-iai f3-oao f4-aee f4-eio f4-iai'.split())
     # contradictions can be deduced based on the negation of the conclusions
     neg_map = str.maketrans("aeio", "oiea")
     contradiction = set([ f"{e[:-1]}{e[-1].translate(neg_map)}" for e in entailment ])
@@ -58,7 +62,7 @@ def gen_syllogism(M, S, P, neg="not", types="aeio", figures="1234", annotated=Fa
                     prem2 = s2.format(*p2)
                     con = s.format(*p)
                     name = f"f{f}-{t1}{t2}{t}"
-                    label = f"-{get_label(name)}" if annotated else "" 
+                    label = f"-{get_label(name)}" if  else "" 
                     yield f"{name}{label}", (prem1.format(**d), prem2.format(**d), con.format(**d))
                     
                     
