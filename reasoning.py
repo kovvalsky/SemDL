@@ -62,7 +62,7 @@ def gen_syllogism(M, S, P, neg="not", types="aeio", figures="1234", existential_
                     prem2 = s2.format(*p2)
                     con = s.format(*p)
                     name = f"f{f}-{t1}{t2}{t}"
-                    label = f"-{get_label(name)}" if  else "" 
+                    label = f"-{get_label(name)}"
                     yield f"{name}{label}", (prem1.format(**d), prem2.format(**d), con.format(**d))
                     
                     
