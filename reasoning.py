@@ -34,7 +34,7 @@ def gen_syllogism(M, S, P, neg="not", types="aeio", figures="1234", existential_
 
     # labeling the syllogisms
     if existential_import:
-        entailment = set('f1-aaa f1-eae f1-aai f1-aii f1-eao f1-eio f2-aee f2-eae f2-aeo f2-aoo f2-eao f2-eio f3-aai f3-aii f3-iai f3-eao f3-eio f3-oao f4-aee f4-aai f4-iai f4-aeo f4-eao f4-eio']'.split())
+        entailment = set('f1-aaa f1-eae f1-aai f1-aii f1-eao f1-eio f2-aee f2-eae f2-aeo f2-aoo f2-eao f2-eio f3-aai f3-aii f3-iai f3-eao f3-eio f3-oao f4-aee f4-aai f4-iai f4-aeo f4-eao f4-eio'.split())
     else:
         entailment = set('f1-aaa f1-aii f1-eae f1-eio f2-aee f2-aoo f2-eae f2-eio f3-aii f3-eio f3-iai f3-oao f4-aee f4-eio f4-iai'.split())
     # contradictions can be deduced based on the negation of the conclusions
